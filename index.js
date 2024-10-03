@@ -31,10 +31,10 @@ app.get("/justlist", (req, res) => {
     }
   });
 });
-app.get("/regvisit", (req, res) => {
+app.get("/reqvisit", (req, res) => {
   res.render("regvisit");
 });
-app.post("/regvisit", (req, res) => {
+app.post("/reqvisit", (req, res) => {
   console.log(req.body);
   fs.open("public/textfiles/visitlog.txt", "a", (err, file) => {
     if (err) {
