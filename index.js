@@ -35,6 +35,9 @@ app.get("/reqvisit", (req, res) => {
   res.render("regvisit");
 });
 app.post("/reqvisit", (req, res) => {
+  const wkDays = dtEt.dayEt();
+  const dateNow = dtEt.dateEt();
+  const timeNow = dtEt.timeEt();
   console.log(req.body);
   fs.open("public/textfiles/visitlog.txt", "a", (err, file) => {
     if (err) {
@@ -42,7 +45,7 @@ app.post("/reqvisit", (req, res) => {
     } else {
       fs.appendFile(
         "public/textfiles/visitlog.txt",
-        req.body.firstNameInput + " " + req.body.lastNameInput + ";",
+        req.body.firstNameInput + " " + req.body.lastNameInput + " ( " + wkDays + " " + dateNow + " kell " + timeNow + " )" +  ";",
         (err) => {
           if (err) {
             throw err;
