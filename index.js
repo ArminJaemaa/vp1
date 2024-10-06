@@ -55,4 +55,15 @@ app.post("/reqvisit", (req, res) => {
     }
   });
 });
+app.get("/visitlog", (req, res) => {
+  let visits = [];
+  fs.readFile("public/textfiles/visitlog.txt", "utf8", (err, data) => {
+    if (err) {
+      throw err;
+    } else {
+      visits = data.split(";")
+      res.render("visitlog", {h3: "külastus", listData: visits})
+    }
+  });
+});
 app.listen(5133);
