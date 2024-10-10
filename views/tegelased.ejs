@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<hr lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(156, 224, 101);
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/banner/vp_banner_2024.png" alt="banner" />
+    <h1 style="border: 2px solid rgb(0, 0, 0)">
+      &#128526; TEGELASED &#129312;
+    </h1>
+  </hr>
+  <ul>
+    <li> <a href="/">Avaleht</a></li>
+    <li> <a href="/eestifilm">Eesti film</a></li>
+  </ul>
+</hr>
+  <h2> Eesti filmitegelased </h2>
+  <ol>
+    <% persons.forEach(function(item){ %>
+      <li><%= item.first_name %><%= item.last_name %>, sündinud<%= item.birth_date %></li>
+    <% }); %>
+  </ol>
+  </body>
+</html>
