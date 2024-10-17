@@ -97,9 +97,9 @@ const dayPlanEt = function dayPlanToday() {
 const givenDateFormatted = function (gDate) {
   let timeNow = new Date(gDate);
   let date = timeNow.getDate();
-  let month = timeNow.getMonth();
+  let month = timeNow.getMonth()+1;
   let year = timeNow.getFullYear();
-  let givenDate = year + "-" + month + "-" + date;
+  let givenDate = date + "." + month + "." + year;
   return givenDate;
 };
 const daysBetween = function () {

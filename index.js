@@ -163,31 +163,43 @@ app.get("/eestifilm/sisestus", (req, res) => {
   let alert = "";
   let movieName = "";
   let movieYear = "";
+  let actorFirstName = "";
+  let actorLastName = "";
+  let birthDate = "";
   res.render("film_insert", {
     alert: alert,
     movieName: movieName,
     movieYear: movieYear,
+    actorFirstName: actorFirstName,
+    actorLastName: actorLastName,
+    birthDate: birthDate,
   });
 });
 app.post("/eestifilm/sisestus", (req, res) => {
   let alert = "";
   let movieName = "";
   let movieYear = "";
-  if (req.body.movieNameSubmit || req.body.movieYearSubmit) {
-    if (!req.body.movieNameSubmit || !req.body.movieYearSubmit) {
+  let actorFirstName = "";
+  let actorLastName = "";
+  let birthDate = "";
+  if (req.body.movieSubmit) {
+    if (!req.body.movieNameInput || !req.body.movieYearInput) {
       alert = "Osa andmeid sisestamata";
-      movieName = req.body.movieNameSubmit;
-      movieYear = req.body.movieYearSubmit;
+      movieName = req.body.movieNameInput;
+      movieYear = req.body.movieYearInput;
       res.render("film_insert", {
         alert: alert,
         movieName: movieName,
         movieYear: movieYear,
+        actorFirstName: actorFirstName,
+        actorLastName: actorLastName,
+        birthDate: birthDate,
       });
     } else {
       sqlreq = "INSERT INTO movie (title, production_year) VALUES(?,?)";
       conn.query(
         sqlreq,
-        [req.body.movieNameSubmit, req.body.movieYearSubmit],
+        [req.body.movieNameInput, req.body.movieYearInput],
         (err, sqlRes) => {
           if (err) {
             throw err;
@@ -198,12 +210,61 @@ app.post("/eestifilm/sisestus", (req, res) => {
               alert: alert,
               movieName: movieName,
               movieYear: movieYear,
+              actorFirstName: actorFirstName,
+              actorLastName: actorLastName,
+              birthDate: birthDate,
             });
           }
         }
       );
     }
-  } //else if ( req.body.actorFirstName || req.body.actorLastName )
+  } else if (req.body.actorSubmit) {
+    if (
+      !req.body.actorFirstNameInput ||
+      req.body.actorLastNameInput ||
+      req.body.actorBirthDate
+    ) {
+      alert = "osa andmeid sisestamata";
+      actorFirstName = req.body.actorFirstNameInput;
+      actorLastName = req.body.actorLastNameInput;
+      birthDate = req.body.actorBirthDate;
+      res.render("film_insert", {
+        alert: alert,
+        movieName: movieName,
+        movieYear: movieYear,
+        actorFirstName: actorFirstName,
+        actorLastName: actorLastName,
+        birthDate: birthDate,
+      });
+    } else {
+      sqlreq =
+        "INSERT INTO person (first_name, last_name, birth_date) VALUES(?,?)";
+      conn.query(
+        sqlreq,
+        [
+          req.body.actorFirstName,
+          req.body.actorLastNameInput,
+          req.body.actorBirthDate,
+        ],
+        (err, sqlres) => {
+          if (err) {
+            throw err;
+          } else {
+            alert = "Andmed kirjutati andmebaasi";
+            console.log("kirjutati andmebaasi");
+            res.render("film_insert", {
+              alert: alert,
+              movieName: movieName,
+              movieYear: movieYear,
+              actorFirstName: actorFirstName,
+              actorLastName: actorLastName,
+              birthDate: birthDate,
+            });
+          }
+        }
+      );
+    }
+  }
 });
 app.get("/visitlogdb", (req, res) => {
   let sqlReq = "SELECT first_name, last_name, visit_time FROM vp1_visitlog";
