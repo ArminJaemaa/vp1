@@ -11,8 +11,10 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
+  const semestrist = dtEt.semester();
   //res.send("express läks täiesti käima");
-  res.render("index");
+  //console.log(semestrist);
+  res.render("index", { semestrist }); //, days: dtEt.daysBetween("9-2-2024") });
 });
 
 //andmebaasi ühendus:
@@ -144,10 +146,93 @@ app.get("/eestifilm/tegelased", (req, res) => {
       throw err;
     } else {
       console.log(sqlres);
-      persons = sqlres;
+      //persons = sqlres;
+      for (let i = 0; i < sqlres.length; i++) {
+        persons.push({
+          first_name: sqlres[i].first_name,
+          last_name: sqlres[i].last_name,
+          birth_date: dtEt.givenDate(sqlres[i].birth_date),
+        });
+      }
       res.render("tegelased", { persons: persons });
     }
   });
   //res.render("tegelased");
+});
+app.get("/eestifilm/sisestus", (req, res) => {
+  let alert = "";
+  let movieName = "";
+  let movieYear = "";
+  res.render("film_insert", {
+    alert: alert,
+    movieName: movieName,
+    movieYear: movieYear,
+  });
+});
+app.post("/eestifilm/sisestus", (req, res) => {
+  let alert = "";
+  let movieName = "";
+  let movieYear = "";
+  if (req.body.movieNameSubmit || req.body.movieYearSubmit) {
+    if (!req.body.movieNameSubmit || !req.body.movieYearSubmit) {
+      alert = "Osa andmeid sisestamata";
+      movieName = req.body.movieNameSubmit;
+      movieYear = req.body.movieYearSubmit;
+      res.render("film_insert", {
+        alert: alert,
+        movieName: movieName,
+        movieYear: movieYear,
+      });
+    } else {
+      sqlreq = "INSERT INTO movie (title, production_year) VALUES(?,?)";
+      conn.query(
+        sqlreq,
+        [req.body.movieNameSubmit, req.body.movieYearSubmit],
+        (err, sqlRes) => {
+          if (err) {
+            throw err;
+          } else {
+            alert = "Andmed kirjutati andmebaasi";
+            console.log("kirjutati andmebaasi");
+            res.render("film_insert", {
+              alert: alert,
+              movieName: movieName,
+              movieYear: movieYear,
+            });
+          }
+        }
+      );
+    }
+  } //else if ( req.body.actorFirstName || req.body.actorLastName )
+});
+app.get("/visitlogdb", (req, res) => {
+  let sqlReq = "SELECT first_name, last_name, visit_time FROM vp1_visitlog";
+  let visits = [];
+  conn.query(sqlReq, (err, sqlRes) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log(sqlRes);
+      for (let i = 0; i < sqlRes.length; i++) {
+        visits.push({
+          first_name: sqlRes[i].first_name,
+          last_name: sqlRes[i].last_name,
+          visit_time: dtEt.givenDate(sqlRes[i].visit_time),
+        });
+      }
+      //visits = sqlRes;
+      res.render("visitlogdb", { visits: visits });
+    }
+  });
+});
+app.get("/add_news", (req, res) => {
+  let notice = "";
+  let newsText = "";
+  let expireDate = dtEt.expireDate();
+  res.render("add_news", {
+    notice: notice,
+    expireDate: expireDate,
+    newsText: newsText,
+  });
 });
 app.listen(5133);

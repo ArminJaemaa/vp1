@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(146, 177, 7);
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/banner/vp_banner_2024.png" alt="banner" />
+    <h1 style="border: 2px solid rgb(0, 0, 0)">&#128526; FILMID &#129312;</h1>
+    <hr />
+    <h1>Eesti film</h1>
+    <ul>
+      <li><a href="/">Avaleht</a></li>
+      <li><a href="/eestifilm/tegelased">Eesti filmi tegelased</a></li>
+      <li><a href="/eestifilm">Tagasi</a></li>
+    </ul>
+    <hr />
+    <h2>Sisesta siia Film</h2>
+    <form method="POST">
+      <label for="movieNameSubmit">Filmi nimi</label>
+      <input
+        type="text"
+        id="movieNameSubmit"
+        name="movieName"
+        placeholder="film..."
+        value="<%= movieName %>"
+      />
+      <label for="movieYearSubmit">Filmi aasta</label>
+      <input
+        type="number"
+        id="movieYearSubmit"
+        name="movieYear"
+        placeholder="aasta..."
+        value="<%= movieYear %>"
+      />
+      <br>
+      <input
+        type="submit"
+        id="movieSubmit"
+        name="movieSubmit"
+        value="salvesta"
+      />
+      <p><%= alert %></p>
+    </form>
+    <hr>
+    <h2>Sisesta siia näitleja</h2>
+    <form method="POST">
+      <label for="actorFirstName">Näitleja eesnimi</label>
+      <input type="text" id="actorFirstName" name="actorFirstName" placeholder="eesnimi..." >
+      <label for="actorLastName">Näitleja perekonnanimi</label>
+      <input type="text" id="actorLastName" name="actorLastName" placeholder="perekonnanimi">
+      <br>
+      <input type="submit" id="actorSubmit" name="actorSubmit" value="salvesta">
+    </form>
+    <hr>
+    <h2>Sisesta siia roll</h2>
+  </body>
+</html>

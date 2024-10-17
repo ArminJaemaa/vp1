@@ -19,6 +19,11 @@
     <li> <a href="/">Tagasi avalehele</a></li>
   </ul>
 </hr>
-
+  <h2>Külastajate nimekiri andmebaasist</h2>
+  <ol>
+    <% visits.forEach(function(item){ %>
+      <li><%= item.first_name %><%= item.last_name %>, külastus <%= item.visit_time %></li>
+    <% }); %>
+  </ol>
   </body>
 </html>

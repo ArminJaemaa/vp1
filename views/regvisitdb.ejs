@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<hr lang="et">
+<html lang="et">
   <head>
     <meta charset="utf-8" />
     <title>Armin</title>
@@ -14,11 +14,11 @@
         <h1 style="border: 2px solid rgb(0, 0, 0)">
           &#128526; REGISTREERI SIIN ENNAST ÄRA &#129312;
         </h1>
-      </hr>
+      <hr>
       <ul>
         <li> <a href="/">Avaleht</a></li>
       </ul>
-    </hr>
+    <hr>
       <h2> Pane oma nimi kirja  </h2>
       <form method="POST">
         <label for="firstNameInput">Eesnimi; </label>
@@ -27,7 +27,7 @@
         <label for="lastNameInput">Perekonnanimi; </label>
         <input type = "text" id="lastNameInput" name="lastNameInput" placeholder="Perekonnanimi..." value="<%= lastName %>">
         <br>
-        <input type = "submit" id="regSubmit" name="regSublit" value="salvesta" >
+        <input type = "submit" id="regSubmit" name="regSubmit" value="salvesta" >
       </form>
       <p>
         <%= notice %>

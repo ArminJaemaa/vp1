@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<hr lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(230, 118, 67);
+      }
+    </style>
+  </head>
+  <body>
+        <img src="/banner/vp_banner_2024.png" alt="banner" />
+        <h1 style="border: 2px solid rgb(216, 156, 156)">
+          &#128526; Lisa uudis &#129312;
+        </h1>
+      </hr>
+      <ul>
+        <li> <a href="/">Avaleht</a></li>
+      </ul>
+    </hr>
+      <h2> Lisa siia uudis </h2>
+      <form method="POST">
+        <label for="titleInput">uudise pealkiri</label>
+        <input type = "text" id="titleInput" name="titleinput" placeholder="uudise pealkiri...">
+        <br>
+        <br>
+        <textarea id="newsInput" name="newsInput" cols="100" rows="5"></textarea>
+        <br>
+        <label>uudise aegumise kuupäev</label>
+        <input type="date" id="expireInput" name="expireInput" value="<%= expireDate %>">
+        <br>
+        <input type = "submit" id="newsSubmit" name="newsSubmit" value="salvesta" >
+      </form>
+      <p><%=expireDate%></p>
+      <hr>
+      <p><a href="/visitlog">Külastajate nimekiri</a></p>
+  </body>
+</html>
