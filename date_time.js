@@ -102,8 +102,8 @@ const givenDateFormatted = function (gDate) {
   let givenDate = date + "." + month + "." + year;
   return givenDate;
 };
-const daysBetween = function () {
-  let algus = new Date();
+const daysBetween = function (gDate) {
+  let algus = new Date(gDate);
   let lõpp = new Date().getTime();
   let differenceITime = lõpp - algus.getTime();
   let differenceInDays = Math.round(differenceITime / (1000 * 3600 * 24));

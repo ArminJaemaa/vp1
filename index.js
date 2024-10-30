@@ -11,7 +11,7 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
-  const semestrist = dtEt.semester();
+  const semestrist = dtEt.semester("9-2-2024");
   //res.send("express läks täiesti käima");
   //console.log(semestrist);
   res.render("index", { semestrist }); //, days: dtEt.daysBetween("9-2-2024") });
@@ -159,6 +159,19 @@ app.get("/eestifilm/tegelased", (req, res) => {
   });
   //res.render("tegelased");
 });
+app.get("/eestifilm/movies", (req, res) => {
+  let sqlreq = "SELECT title, production_year FROM movie";
+  let movies = [];
+  conn.query(sqlreq, (err, sqlres) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log(sqlres);
+      movies = sqlres;
+      res.render("movies",{movies: movies});
+    }
+  });
+});
 app.get("/eestifilm/sisestus", (req, res) => {
   let alert = "";
   let movieName = "";
@@ -221,13 +234,13 @@ app.post("/eestifilm/sisestus", (req, res) => {
   } else if (req.body.actorSubmit) {
     if (
       !req.body.actorFirstNameInput ||
-      req.body.actorLastNameInput ||
-      req.body.actorBirthDate
+      !req.body.actorLastNameInput ||
+      !req.body.actorBirthDateInput
     ) {
       alert = "osa andmeid sisestamata";
       actorFirstName = req.body.actorFirstNameInput;
       actorLastName = req.body.actorLastNameInput;
-      birthDate = req.body.actorBirthDate;
+      birthDate = req.body.actorBirthDateInput;
       res.render("film_insert", {
         alert: alert,
         movieName: movieName,
@@ -238,13 +251,13 @@ app.post("/eestifilm/sisestus", (req, res) => {
       });
     } else {
       sqlreq =
-        "INSERT INTO person (first_name, last_name, birth_date) VALUES(?,?)";
+        "INSERT INTO person (first_name, last_name, birth_date) VALUES(?,?,?)";
       conn.query(
         sqlreq,
         [
-          req.body.actorFirstName,
+          req.body.actorFirstNameInput,
           req.body.actorLastNameInput,
-          req.body.actorBirthDate,
+          req.body.actorBirthDateInput,
         ],
         (err, sqlres) => {
           if (err) {
