@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<hr lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(186, 204, 156);
+      }
+    </style>
+  </head>
+  <body>
+        <img src="/banner/vp_banner_2024.png" alt="banner" />
+        <h1 style="border: 2px solid rgb(0, 0, 0)">
+          &#128526; Siin saad pilte laadida üles &#129312;
+        </h1>
+      </hr>
+      <ul>
+        <li> <a href="/">Avaleht</a></li>
+      </ul>
+    </hr>
+      <h2> Pildi laadimine </h2>
+      <form method="POST" enctype="multipart/form-data">
+        <label for="photoInput">Vali soovitud pildifail</label>
+        <br>
+        <input id="photoInput" name="photoInput" type="file">
+        <br>
+        <br>
+        <label for="altInput">Pildi alternatiivtekst</label>
+        <br>
+        <input id="altInput" name="altInput" type="text" placeholder="pildi alternatiivtekst...">
+        <br>
+        <input type="radio" id="privacyInput1" name="privacyInput" value="1" checked>
+        <laber for="privacyInput1">Privaatne ( ainult sina näed )</laber>
+        <br>
+        <input type="radio" id="privacyInput2" name="privacyInput" value="2">
+        <laber for="privacyInput2">Sisseloginud kasutajatele</laber>
+        <br>
+        <input type="radio" id="privacyInput3" name="privacyInput" value="3">
+        <laber for="privacyInput3">Avalik</laber>
+        <br>
+        <input type="submit" id="photoSubmit" name="photoSubmit">
+      </form>
+      <hr>
+  </body>
+</html>

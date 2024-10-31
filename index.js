@@ -5,24 +5,29 @@ const dbInfo = require("../vp1_confiq.js");
 const mysql = require("mysql2");
 //päringu lahti arutamiseks post päringute puhul.
 const bodyparser = require("body-parser");
+//failide üleslaadimiseks!!!-
+const multer = require("multer");
+//pildi manipuleerimiseks (suuruse muutmiseks)
+const sharp = require("sharp");
 
 const app = express();
 app.set("view engine", "ejs");
-app.use(express.static("public"));
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(express.static("public")); //siit saab server kätte sealt kataloogist asju!!
+//app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   const semestrist = dtEt.semester("9-2-2024");
-  //res.send("express läks täiesti käima");
-  //console.log(semestrist);
-  res.render("index", { semestrist }); //, days: dtEt.daysBetween("9-2-2024") });
+  res.render("index", { semestrist });
 });
+//seadistame vahevara fotode laadimiseks kindlasse kataloogi!!-
+const upLoadGallery = multer({ dest: "./public/Gallery/Orig/" });
 
 //andmebaasi ühendus:
 const conn = mysql.createConnection({
   host: dbInfo.confiqdata.host,
   user: dbInfo.confiqdata.user,
   password: dbInfo.confiqdata.passWord,
-  database: dbInfo.confiqdata.dataBase,
+  database: dbInfo.confiqdata.dataBase
 });
 
 app.get("/timenow", (req, res) => {
@@ -98,7 +103,7 @@ app.get("/regvisitdb", (req, res) => {
   res.render("regvisitdb", {
     notice: notice,
     firstName: firstName,
-    lastName: lastName,
+    lastName: lastName
   });
 });
 app.post("/regvisitdb", (req, res) => {
@@ -112,7 +117,7 @@ app.post("/regvisitdb", (req, res) => {
     res.render("regvisitdb", {
       notice: notice,
       firstName: firstName,
-      lastName: lastName,
+      lastName: lastName
     });
   } else {
     let sqlreq = "INSERT INTO vp1_visitlog (first_name, last_name) VALUES(?,?)";
@@ -128,7 +133,7 @@ app.post("/regvisitdb", (req, res) => {
           res.render("regvisitdb", {
             notice: notice,
             firstName: firstName,
-            lastName: lastName,
+            lastName: lastName
           });
         }
       }
@@ -151,7 +156,7 @@ app.get("/eestifilm/tegelased", (req, res) => {
         persons.push({
           first_name: sqlres[i].first_name,
           last_name: sqlres[i].last_name,
-          birth_date: dtEt.givenDate(sqlres[i].birth_date),
+          birth_date: dtEt.givenDate(sqlres[i].birth_date)
         });
       }
       res.render("tegelased", { persons: persons });
@@ -168,7 +173,7 @@ app.get("/eestifilm/movies", (req, res) => {
     } else {
       console.log(sqlres);
       movies = sqlres;
-      res.render("movies",{movies: movies});
+      res.render("movies", { movies: movies });
     }
   });
 });
@@ -185,7 +190,7 @@ app.get("/eestifilm/sisestus", (req, res) => {
     movieYear: movieYear,
     actorFirstName: actorFirstName,
     actorLastName: actorLastName,
-    birthDate: birthDate,
+    birthDate: birthDate
   });
 });
 app.post("/eestifilm/sisestus", (req, res) => {
@@ -206,7 +211,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
         movieYear: movieYear,
         actorFirstName: actorFirstName,
         actorLastName: actorLastName,
-        birthDate: birthDate,
+        birthDate: birthDate
       });
     } else {
       sqlreq = "INSERT INTO movie (title, production_year) VALUES(?,?)";
@@ -225,7 +230,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
               movieYear: movieYear,
               actorFirstName: actorFirstName,
               actorLastName: actorLastName,
-              birthDate: birthDate,
+              birthDate: birthDate
             });
           }
         }
@@ -247,7 +252,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
         movieYear: movieYear,
         actorFirstName: actorFirstName,
         actorLastName: actorLastName,
-        birthDate: birthDate,
+        birthDate: birthDate
       });
     } else {
       sqlreq =
@@ -257,7 +262,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
         [
           req.body.actorFirstNameInput,
           req.body.actorLastNameInput,
-          req.body.actorBirthDateInput,
+          req.body.actorBirthDateInput
         ],
         (err, sqlres) => {
           if (err) {
@@ -271,7 +276,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
               movieYear: movieYear,
               actorFirstName: actorFirstName,
               actorLastName: actorLastName,
-              birthDate: birthDate,
+              birthDate: birthDate
             });
           }
         }
@@ -291,7 +296,7 @@ app.get("/visitlogdb", (req, res) => {
         visits.push({
           first_name: sqlRes[i].first_name,
           last_name: sqlRes[i].last_name,
-          visit_time: dtEt.givenDate(sqlRes[i].visit_time),
+          visit_time: dtEt.givenDate(sqlRes[i].visit_time)
         });
       }
       //visits = sqlRes;
@@ -306,7 +311,51 @@ app.get("/add_news", (req, res) => {
   res.render("add_news", {
     notice: notice,
     expireDate: expireDate,
-    newsText: newsText,
+    newsText: newsText
   });
+});
+app.get("/photoUpload", (req, res) => {
+  res.render("photo_Upload");
+});
+//salvestame pildid kausta!!
+//vahevara - vahetegevus enne main tegevusi!!
+app.post("/photoUpload", upLoadGallery.single("photoInput"), (req, res) => {
+  console.log(req.body);
+  console.log(req.file);
+  const fileName = "vp_" + Date.now() + ".jpg";
+  //nimetame üleslaetud faili ümber!!
+  fs.rename(req.file.path, req.file.destination + fileName, (err) => {
+    console.log(err);
+  });
+  sharp(req.file.destination + fileName)
+    .resize(800, 600)
+    .jpeg({ quality: 90 })
+    .toFile("./public/Gallery/normal/" + fileName);
+  sharp(req.file.destination + fileName)
+    .resize(100, 100)
+    .jpeg({ quality: 90 })
+    .toFile("./public/Gallery/thumb/" + fileName);
+  //salvestame andmebaasi!!
+  let sqlreq =
+    "INSERT INTO images (file_name, orig_name, alt_text, privacy, user_id) VALUES(?,?,?,?,?)";
+  const userId = 1;
+  conn.query(
+    sqlreq,
+    [
+      fileName,
+      req.file.originalname,
+      req.body.altInput,
+      req.body.privacyInput,
+      userId
+    ],
+    (err, result) => {
+      if (err) {
+        throw err;
+      } else {
+        console.log("andmed salvestati andmebaasi");
+        res.render("photo_Upload");
+      }
+    }
+  );
 });
 app.listen(5133);
