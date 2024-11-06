@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<hr lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(255, 215, 135);
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/banner/vp_banner_2024.png" alt="banner" />
+    <h1 style="border: 2px solid rgb(0, 0, 0)">
+      &#128526; Uudised siit ja sealt &#129312;
+    </h1>
+  </hr>
+  <h1>Uudised</h1>
+  <ul>
+    <li> <a href="/">Avaleht</a></li>
+    <li> <a href="/add_news">Lisa siin uudiseid</a></li>
+  </ul>
+</hr>
+  <ol>
+    <% news.forEach(function(item){ %>
+      <li>
+        <p><%=item.news_title%></p>
+        <p><%=item.news_text%></p>
+        <p>Üles laetud: <%= item.news_date %>. Aegub: <%=item.expire_date%></p>
+      </li>
+    <% }); %>
+  </ol>
+  </body>
+</html>

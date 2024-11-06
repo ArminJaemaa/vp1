@@ -27,7 +27,7 @@ const conn = mysql.createConnection({
   host: dbInfo.confiqdata.host,
   user: dbInfo.confiqdata.user,
   password: dbInfo.confiqdata.passWord,
-  database: dbInfo.confiqdata.dataBase
+  database: dbInfo.confiqdata.dataBase,
 });
 
 app.get("/timenow", (req, res) => {
@@ -103,7 +103,7 @@ app.get("/regvisitdb", (req, res) => {
   res.render("regvisitdb", {
     notice: notice,
     firstName: firstName,
-    lastName: lastName
+    lastName: lastName,
   });
 });
 app.post("/regvisitdb", (req, res) => {
@@ -117,7 +117,7 @@ app.post("/regvisitdb", (req, res) => {
     res.render("regvisitdb", {
       notice: notice,
       firstName: firstName,
-      lastName: lastName
+      lastName: lastName,
     });
   } else {
     let sqlreq = "INSERT INTO vp1_visitlog (first_name, last_name) VALUES(?,?)";
@@ -133,7 +133,7 @@ app.post("/regvisitdb", (req, res) => {
           res.render("regvisitdb", {
             notice: notice,
             firstName: firstName,
-            lastName: lastName
+            lastName: lastName,
           });
         }
       }
@@ -156,7 +156,7 @@ app.get("/eestifilm/tegelased", (req, res) => {
         persons.push({
           first_name: sqlres[i].first_name,
           last_name: sqlres[i].last_name,
-          birth_date: dtEt.givenDate(sqlres[i].birth_date)
+          birth_date: dtEt.givenDate(sqlres[i].birth_date),
         });
       }
       res.render("tegelased", { persons: persons });
@@ -190,7 +190,7 @@ app.get("/eestifilm/sisestus", (req, res) => {
     movieYear: movieYear,
     actorFirstName: actorFirstName,
     actorLastName: actorLastName,
-    birthDate: birthDate
+    birthDate: birthDate,
   });
 });
 app.post("/eestifilm/sisestus", (req, res) => {
@@ -211,7 +211,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
         movieYear: movieYear,
         actorFirstName: actorFirstName,
         actorLastName: actorLastName,
-        birthDate: birthDate
+        birthDate: birthDate,
       });
     } else {
       sqlreq = "INSERT INTO movie (title, production_year) VALUES(?,?)";
@@ -230,7 +230,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
               movieYear: movieYear,
               actorFirstName: actorFirstName,
               actorLastName: actorLastName,
-              birthDate: birthDate
+              birthDate: birthDate,
             });
           }
         }
@@ -252,7 +252,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
         movieYear: movieYear,
         actorFirstName: actorFirstName,
         actorLastName: actorLastName,
-        birthDate: birthDate
+        birthDate: birthDate,
       });
     } else {
       sqlreq =
@@ -262,7 +262,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
         [
           req.body.actorFirstNameInput,
           req.body.actorLastNameInput,
-          req.body.actorBirthDateInput
+          req.body.actorBirthDateInput,
         ],
         (err, sqlres) => {
           if (err) {
@@ -276,7 +276,7 @@ app.post("/eestifilm/sisestus", (req, res) => {
               movieYear: movieYear,
               actorFirstName: actorFirstName,
               actorLastName: actorLastName,
-              birthDate: birthDate
+              birthDate: birthDate,
             });
           }
         }
@@ -296,7 +296,7 @@ app.get("/visitlogdb", (req, res) => {
         visits.push({
           first_name: sqlRes[i].first_name,
           last_name: sqlRes[i].last_name,
-          visit_time: dtEt.givenDate(sqlRes[i].visit_time)
+          visit_time: dtEt.givenDate(sqlRes[i].visit_time),
         });
       }
       //visits = sqlRes;
@@ -307,55 +307,152 @@ app.get("/visitlogdb", (req, res) => {
 app.get("/add_news", (req, res) => {
   let notice = "";
   let newsText = "";
+  let newsTitle = "";
   let expireDate = dtEt.expireDate();
   res.render("add_news", {
     notice: notice,
     expireDate: expireDate,
-    newsText: newsText
+    newsText: newsText,
+    newsTitle: newsTitle,
   });
 });
+app.post("/add_news", (req, res) => {
+  let notice = "";
+  let newsText = "";
+  let newsTitle = "";
+  let expireDate = dtEt.expireDate();
+  let user = 1;
+  if (!req.body.titleInput || req.body.titleInput.length < 3) {
+    let notice = "Uudise pealkiri peab olema vähemalt 3 tähemärki";
+    let newsText = req.body.newsInput;
+    let newsTitle = req.body.titleInput;
+    let expireDate = req.body.expireInput;
+    res.render("add_news", {
+      newsText: newsText,
+      newsTitle: newsTitle,
+      expireDate: expireDate,
+      notice: notice,
+    });
+  } else if (!req.body.newsInput || req.body.newsInput.length < 10) {
+    let notice = "Uudise pikkus peab olema vähemalt 10 tähemärki";
+    let newsText = req.body.newsInput;
+    let newsTitle = req.body.titleInput;
+    let expireDate = req.body.expireInput;
+    res.render("add_news", {
+      newsText: newsText,
+      notice: notice,
+      newsTitle: newsTitle,
+      expireDate: expireDate,
+    });
+  } else {
+    let newsText = req.body.newsInput;
+    let newsTitle = req.body.titleInput;
+    let expireDate = req.body.expireInput;
+    let sqlreq =
+      "INSERT INTO News (news_title, news_text, expire_date, user_id) VALUES (?,?,?,?) ";
+    conn.query(
+      sqlreq,
+      [newsTitle, newsText, expireDate, user],
+      (err, sqlres) => {
+        if (err) {
+          throw err;
+        } else {
+          let notice = "Uudis salvestati andmebaasi";
+          res.render("add_news", {
+            notice,
+            newsText: "",
+            newsTitle: "",
+            expireDate: dtEt.expireDate(),
+          });
+        }
+      }
+    );
+  }
+});
+app.get("/news", (req, res) => {
+  let sqlreq =
+    "SELECT news_title, news_text, news_date, expire_date FROM News ORDER BY id DESC";
+  let news = [];
+  conn.query(sqlreq, (err, sqlres) => {
+    if (err) {
+      throw err;
+    } else {
+      for (let i = 0; i <sqlres.length;i++) {
+        news.push({
+          news_title: sqlres[i].news_title,
+          news_text: sqlres[i].news_text,
+          news_date: dtEt.givenDate(sqlres[i].news_date),
+          expire_date: dtEt.givenDate(sqlres[i].expire_date)
+        })
+      }
+      res.render("news", { news: news });
+    }
+  });
+  //res.render("news");
+});
 app.get("/photoUpload", (req, res) => {
-  res.render("photo_Upload");
+  notice = "";
+  altTxt = "";
+  res.render("photo_Upload", { notice, altTxt });
 });
 //salvestame pildid kausta!!
 //vahevara - vahetegevus enne main tegevusi!!
 app.post("/photoUpload", upLoadGallery.single("photoInput"), (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
-  const fileName = "vp_" + Date.now() + ".jpg";
-  //nimetame üleslaetud faili ümber!!
-  fs.rename(req.file.path, req.file.destination + fileName, (err) => {
-    console.log(err);
-  });
-  sharp(req.file.destination + fileName)
-    .resize(800, 600)
-    .jpeg({ quality: 90 })
-    .toFile("./public/Gallery/normal/" + fileName);
-  sharp(req.file.destination + fileName)
-    .resize(100, 100)
-    .jpeg({ quality: 90 })
-    .toFile("./public/Gallery/thumb/" + fileName);
-  //salvestame andmebaasi!!
-  let sqlreq =
-    "INSERT INTO images (file_name, orig_name, alt_text, privacy, user_id) VALUES(?,?,?,?,?)";
-  const userId = 1;
-  conn.query(
-    sqlreq,
-    [
-      fileName,
-      req.file.originalname,
-      req.body.altInput,
-      req.body.privacyInput,
-      userId
-    ],
-    (err, result) => {
-      if (err) {
-        throw err;
-      } else {
-        console.log("andmed salvestati andmebaasi");
-        res.render("photo_Upload");
+  if (!req.file) {
+    notice = "Osa andmeid sisestamata";
+    altTxt = req.body.altInput;
+    res.render("photo_Upload", { notice, altTxt });
+  } else {
+    console.log(req.body);
+    console.log(req.file);
+    const fileName = "vp_" + Date.now() + ".jpg";
+    //nimetame üleslaetud faili ümber!!
+    fs.rename(req.file.path, req.file.destination + fileName, (err) => {
+      console.log(err);
+    });
+    sharp(req.file.destination + fileName)
+      .resize(800, 600)
+      .jpeg({ quality: 90 })
+      .toFile("./public/Gallery/normal/" + fileName);
+    sharp(req.file.destination + fileName)
+      .resize(100, 100)
+      .jpeg({ quality: 90 })
+      .toFile("./public/Gallery/thumb/" + fileName);
+    //salvestame andmebaasi!!
+    let sqlreq =
+      "INSERT INTO images (file_name, orig_name, alt_text, privacy, user_id) VALUES(?,?,?,?,?)";
+    const userId = 1;
+    conn.query(
+      sqlreq,
+      [
+        fileName,
+        req.file.originalname,
+        req.body.altInput,
+        req.body.privacyInput,
+        userId,
+      ],
+      (err, result) => {
+        if (err) {
+          throw err;
+        } else {
+          console.log("andmed salvestati andmebaasi");
+          res.render("photo_Upload");
+        }
       }
+    );
+  }
+});
+app.get("/images", (req, res) => {
+  let sqlreq =
+    "SELECT file_name, orig_name, alt_text FROM images WHERE privacy=?";
+  const privacy = 3;
+  conn.query(sqlreq, [privacy], (err, result) => {
+    if (err) {
+      throw err;
+    } else {
+      images = result;
+      res.render("images_gallery", { images });
     }
-  );
+  });
 });
 app.listen(5133);

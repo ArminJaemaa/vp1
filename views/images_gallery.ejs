@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(91, 178, 236);
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/banner/vp_banner_2024.png" alt="banner" />
+    <h1 style="border: 2px solid rgb(0, 47, 255)">
+      &#128526; Siin on kõik pildid &#129312;
+    </h1>
+  </hr>
+  <ul>
+    <li> <a href="/">Tagasi avalehele</a> </li>
+    <li> <a href="/photoUpload">Lisa siin pilte juurde</a> </li>
+  </ul>
+</hr>
+  <h2> Gallery </h2>
+   <% images.forEach(function(photo){ %>
+    <ol>
+      <li>
+        <img src="/public/Gallery/thumb/<%=photo.file_name%>" alt="<%=photo.alt_text%>" />
+      </li>
+      <p><%=photo.orig_name%></p>
+    </ol>
+    <% }); %>
+  </body>
+</html>

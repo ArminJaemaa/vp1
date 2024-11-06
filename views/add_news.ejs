@@ -17,23 +17,23 @@
       </hr>
       <ul>
         <li> <a href="/">Avaleht</a></li>
+        <li> <a href="/news">Uudised</a></li>
       </ul>
     </hr>
       <h2> Lisa siia uudis </h2>
       <form method="POST">
         <label for="titleInput">uudise pealkiri</label>
-        <input type = "text" id="titleInput" name="titleinput" placeholder="uudise pealkiri...">
+        <input type = "text" id="titleInput" name="titleInput" placeholder="uudise pealkiri..." value="<%=newsTitle%>">
         <br>
         <br>
         <textarea id="newsInput" name="newsInput" cols="100" rows="5" value="<%= newsText %>"></textarea>
         <br>
-        <label>uudise aegumise kuupäev</label>
+        <label for="expireInput">uudise aegumise kuupäev</label>
         <input type="date" id="expireInput" name="expireInput" value="<%= expireDate %>">
         <br>
         <input type = "submit" id="newsSubmit" name="newsSubmit" value="salvesta" >
       </form>
-      <p> <%=expireDate%></p>
       <hr>
-      <p><a href="/visitlog">Külastajate nimekiri</a></p>
+      <p><strong><%=notice%></strong></p>
   </body>
 </html>
