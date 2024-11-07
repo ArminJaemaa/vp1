@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(219, 255, 152);
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/banner/vp_banner_2024.png" alt="banner" />
+    <h1 style="border: 2px solid rgb(0, 0, 0)">
+      Armin Jaemaa, Informaatika tudeng Tallinna Ülikoolis, 1.õppeaasta
+      &#128526; vot siin on väga palju infot onju &#129312;
+    </h1>
+    <img src="/meme/meme.2.jpg" alt="kerge meem" width="300" height="280" />
+    <p><a href="/">Avaleht</a></p>
+    <p><strong>Logi sisse</strong></p>
+    <form method="POST">
+      <label for="emailInputt">Kasutajatunnus: </label>
+      <input
+        type="text"
+        id="emailInput"
+        name="emailInput"
+        placeholder="Kasutajatunnus"
+      />
+      <label for="passwordInput">Salasõna:</label>
+      <input
+        type="password"
+        id="passwordInput"
+        name="passwordInput"
+        placeholder="Parool"
+      />
+      <br />
+      <input
+        type="submit"
+        id="loginSubmit"
+        name="loginSubmit"
+        value="Logi sisse"
+      />
+      <span><%= locals.notice || "Ootel" %></span>
+    </form>
+    <hr />
+  </body>
+</html>

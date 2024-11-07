@@ -9,6 +9,8 @@ const bodyparser = require("body-parser");
 const multer = require("multer");
 //pildi manipuleerimiseks (suuruse muutmiseks)
 const sharp = require("sharp");
+//parooli krüpteerimiseks ->
+const bcrypt = require("bcrypt");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -377,13 +379,13 @@ app.get("/news", (req, res) => {
     if (err) {
       throw err;
     } else {
-      for (let i = 0; i <sqlres.length;i++) {
+      for (let i = 0; i < sqlres.length; i++) {
         news.push({
           news_title: sqlres[i].news_title,
           news_text: sqlres[i].news_text,
           news_date: dtEt.givenDate(sqlres[i].news_date),
-          expire_date: dtEt.givenDate(sqlres[i].expire_date)
-        })
+          expire_date: dtEt.givenDate(sqlres[i].expire_date),
+        });
       }
       res.render("news", { news: news });
     }
@@ -454,5 +456,174 @@ app.get("/images", (req, res) => {
       res.render("images_gallery", { images });
     }
   });
+});
+app.get("/signUp", (req, res) => {
+  let notice = "";
+  res.render("signup", { notice: notice });
+});
+app.post("/signUp", (req, res) => {
+  let notice = "Ootan andmeid";
+  console.log(req.body);
+  if (
+    !req.body.firstNameInput ||
+    !req.body.lastNameInput ||
+    !req.body.birthDateInput ||
+    !req.body.emailInput ||
+    !req.body.genderInput ||
+    req.body.passwordInput.length < 8 ||
+    req.body.confirmPasswordInput !== req.body.passwordInput
+  ) {
+    console.log("Andmeid on puudu või paroolid ei kattu");
+    notice = "Andmeid on puudu, parool liiga lühike või paroolid ei kattu";
+    res.render("signup", { notice: notice });
+  } //kui andmetes viga ... lõppeb
+  else {
+    notice = "Andmed sisestatud";
+    //loome parooliräsi jaoks "soola"
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) {
+        notice =
+          "Tehniline viga parooli krüpteerimisel, kasutajakontot ei loodud";
+        res.render("signup", { notice: notice });
+      } else {
+        //krüpeerime parooli ->
+        bcrypt.hash(req.body.passwordInput, salt, (err, pwdhash) => {
+          if (err) {
+            notice = "Tehniline viga, kasutajakontot ei loodud";
+            res.render("signup", { notice: notice });
+          } else {
+            let sqlreq =
+              "INSERT INTO users ( first_name, last_name, birth_date, gender, email, password ) VALUES (?,?,?,?,?,?)";
+            conn.execute(
+              sqlreq,
+              [
+                req.body.firstNameInput,
+                req.body.lastNameInput,
+                req.body.birthDateInput,
+                req.body.genderInput,
+                req.body.emailInput,
+                pwdhash,
+              ],
+              (err, result) => {
+                if (err) {
+                  notice =
+                    "tehniline viga konto loomisel ja andmebaasi kirjutamisel, kasutajat ei loodud";
+                  res.render("signup", { notice: notice });
+                } else {
+                  notice =
+                    "kasutaja " + req.body.emailInput + " edukalt loodud";
+                  res.render("signup", { notice: notice });
+                }
+              }
+            ); //conn.execute ... lõppeb
+          }
+        }); //hash ... lõppeb
+      }
+    }); //genSalt ... lõppeb
+    console.log(req.body);
+  } //kui andmed korras ... lõppeb
+  //res.render("signup", { notice: notice });
+});
+app.post("/", (req, res) => {
+  let notice = "";
+  const semestrist = dtEt.semester("9-2-2024");
+  if (!req.body.emailInput || !req.body.passwordInput) {
+    console.log("andmeid puudu");
+    notice = "sisselogimise andmeid on puudu";
+    //const semestrist = dtEt.semester("9-2-2024");
+    res.render("index", { semestrist, notice: notice });
+  } else {
+    let sqlReq = "SELECT id, password FROM users WHERE email = ?";
+    conn.execute(sqlReq, [req.body.emailInput], (err, result) => {
+      if (err) {
+        console.log("viga andmebaasist lugemisel");
+        notice = "tehniline viga, ei logitud sisse :(";
+        res.render("index", { notice: notice, semestrist });
+      } else {
+        if (result[0] != null) {
+          //juhul kui kasutaja on olemas ->
+          //kontrollime sisestatud parooli ->
+          bcrypt.compare(
+            req.body.passwordInput,
+            result[0].password,
+            (err, comapreResult) => {
+              if (err) {
+                notice = "tehniline viga, ei logitud sisse :(";
+                res.render("index", { notice: notice, semestrist });
+              } else {
+                //kas võrdlemisel õige või vale parool?? ->
+                if (comapreResult) {
+                  notice = "Oled sisse loginud";
+                  console.log(
+                    "Kasutaja " + req.body.emailInput + " on sisse logitud"
+                  );
+                  res.render("index", { notice: notice, semestrist });
+                } else {
+                  notice = "kasutajatunnus ja/või parool on vale";
+                  res.render("index", { notice: notice, semestrist });
+                }
+              }
+            }
+          );
+        } else {
+          console.log("kasutajat ei ole olemas");
+          notice = "kasutajatunnus ja/või parool on vale";
+          res.render("index", { notice: notice, semestrist });
+        }
+      }
+    }); //conn.execute...lõppeb
+  }
+});
+app.get("/signIn", (req, res) => {
+  res.render("signin");
+});
+app.post("/signIn", (req, res) => {
+  let notice = "";
+  if (!req.body.emailInput || !req.body.passwordInput) {
+    console.log("andmeid puudu");
+    notice = "sisselogimise andmeid on puudu";
+    //const semestrist = dtEt.semester("9-2-2024");
+    res.render("signin", { notice: notice });
+  } else {
+    let sqlReq = "SELECT id, password FROM users WHERE email = ?";
+    conn.execute(sqlReq, [req.body.emailInput], (err, result) => {
+      if (err) {
+        console.log("viga andmebaasist lugemisel");
+        notice = "tehniline viga, ei logitud sisse :(";
+        res.render("signin", { notice: notice });
+      } else {
+        if (result[0] != null) {
+          //juhul kui kasutaja on olemas ->
+          //kontrollime sisestatud parooli ->
+          bcrypt.compare(
+            req.body.passwordInput,
+            result[0].password,
+            (err, comapreResult) => {
+              if (err) {
+                notice = "tehniline viga, ei logitud sisse :(";
+                res.render("signin", { notice: notice });
+              } else {
+                //kas võrdlemisel õige või vale parool?? ->
+                if (comapreResult) {
+                  notice = "Oled sisse loginud";
+                  console.log(
+                    "Kasutaja " + req.body.emailInput + " on sisse logitud"
+                  );
+                  res.render("signin", { notice: notice });
+                } else {
+                  notice = "kasutajatunnus ja/või parool on vale";
+                  res.render("signin", { notice: notice });
+                }
+              }
+            }
+          );
+        } else {
+          console.log("kasutajat ei ole olemas");
+          notice = "kasutajatunnus ja/või parool on vale";
+          res.render("signin", { notice: notice });
+        }
+      }
+    }); //conn.execute...lõppeb
+  }
 });
 app.listen(5133);

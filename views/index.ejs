@@ -5,12 +5,11 @@
     <title>Armin</title>
     <style>
       body {
-        background-color: rgb(199, 179, 137)
+        background-color: rgb(199, 179, 137);
       }
     </style>
   </head>
   <body>
-  <hr>
     <img src="/banner/vp_banner_2024.png" alt="banner" />
     <h1 style="border: 2px solid rgb(0, 0, 0)">
       Armin Jaemaa, Informaatika tudeng Tallinna Ülikoolis, 1.õppeaasta
@@ -22,26 +21,59 @@
       <a href="https://www.tlu.ee/" target="_blank">Tallinna Ülikoolis</a>
       õppetöö eesmärgil ja siin ei ole tõsist infot.
     </p>
-    <p> Semestri algusest on möödas <%= semestrist %> päeva </p>
-  </hr>
-  <ul>
-    <li> <a href="/timenow">Ajainfo</a></li>
-    <li> <a href="/justlist">Vanasõnad</a></li>
-    <li> <a href="/reqvisit">Registreeri oma külastus (txt.faili põhine)</a></li>
-    <li><a href="/visitlog">Külastajate nimekiri, (txt.faili põhine)</a></li>
-    <li><a href="/regvisitdb">Registreeri oma külastus</a></li>
-    <li><a href="/visitlogdb">Külastajate nimekiri</a></li>
-    <li> <a href="/eestifilm">Eesti film</a></li>
-  </ul>
-  <hr>
-  <ul>
-    <li> <a href="/add_news">Lisa uudis</a></li>
-    <li> <a href="/news">Uudised</a></li>
-  </ul>
-<hr>
-  <ul>
-    <li> <a href="/photoUpload">Pildi laadimine</a></li>
-    <li> <a href="/images">Pildid</a></li>
-  </ul>
+    <p>Semestri algusest on möödas <%= semestrist %> päeva</p>
+    <hr />
+    <p><strong>Logi sisse</strong></p>
+    <form method="POST">
+      <label for="emailInputt">Kasutajatunnus: </label>
+      <input
+        type="text"
+        id="emailInput"
+        name="emailInput"
+        placeholder="Kasutajatunnus"
+      />
+      <label for="passwordInput">Salasõna:</label>
+      <input
+        type="password"
+        id="passwordInput"
+        name="passwordInput"
+        placeholder="Parool"
+      />
+      <br />
+      <input
+        type="submit"
+        id="loginSubmit"
+        name="loginSubmit"
+        value="Logi sisse"
+      />
+      <span><%= locals.notice || "Ootel" %></span>
+    </form>
+    <hr />
+    <ul>
+      <li><a href="/timenow">Ajainfo</a></li>
+      <li><a href="/justlist">Vanasõnad</a></li>
+      <li>
+        <a href="/reqvisit">Registreeri oma külastus (txt.faili põhine)</a>
+      </li>
+      <li><a href="/visitlog">Külastajate nimekiri, (txt.faili põhine)</a></li>
+      <li><a href="/regvisitdb">Registreeri oma külastus</a></li>
+      <li><a href="/visitlogdb">Külastajate nimekiri</a></li>
+      <li><a href="/eestifilm">Eesti film</a></li>
+    </ul>
+    <hr />
+    <ul>
+      <li><a href="/add_news">Lisa uudis</a></li>
+      <li><a href="/news">Uudised</a></li>
+    </ul>
+    <hr />
+    <ul>
+      <li><a href="/photoUpload">Pildi laadimine</a></li>
+      <li><a href="/images">Pildid</a></li>
+    </ul>
+    <hr />
+    <ul>
+      <li><a href="/signUp">Loo siin kasutajakonto</a></li>
+      <li><a href="/signIn">Logi siin sisse</a></li>
+    </ul>
   </body>
 </html>

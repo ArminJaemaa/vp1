@@ -24,7 +24,7 @@
   <ol>
     <% news.forEach(function(item){ %>
       <li>
-        <p><%=item.news_title%></p>
+        <p><strong><%=item.news_title%></strong></p>
         <p><%=item.news_text%></p>
         <p>Üles laetud: <%= item.news_date %>. Aegub: <%=item.expire_date%></p>
       </li>
