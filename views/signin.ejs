@@ -10,13 +10,14 @@
     </style>
   </head>
   <body>
-    <img src="/banner/vp_banner_2024.png" alt="banner" />
+    <img src="/banner/vp_banner_2024.png" alt="banner"/>
     <h1 style="border: 2px solid rgb(0, 0, 0)">
       Armin Jaemaa, Informaatika tudeng Tallinna Ülikoolis, 1.õppeaasta
       &#128526; vot siin on väga palju infot onju &#129312;
     </h1>
-    <img src="/meme/meme.2.jpg" alt="kerge meem" width="300" height="280" />
     <p><a href="/">Avaleht</a></p>
+    <img src="/meme/meme.2.jpg" alt="kerge meem paroolist" width="300" height="280" />
+    <hr>
     <p><strong>Logi sisse</strong></p>
     <form method="POST">
       <label for="emailInputt">Kasutajatunnus: </label>
@@ -42,6 +43,7 @@
       />
       <span><%= locals.notice || "Ootel" %></span>
     </form>
+    <p> Kui sul ei ole kasutajakontot loo kasutaja konto <a href="/signUp">siin</a></p>
     <hr />
   </body>
 </html>
