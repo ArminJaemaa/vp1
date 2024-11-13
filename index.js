@@ -459,10 +459,16 @@ app.get("/images", (req, res) => {
 });
 app.get("/signUp", (req, res) => {
   let notice = "";
-  res.render("signup", { notice: notice });
+  let firstNameValue = "";
+  let lastNameValue = "";
+  let eMail = "";
+  res.render("signup", { notice: notice, eMail:eMail, lastNameValue:lastNameValue, firstNameValue: firstNameValue });
 });
 app.post("/signUp", (req, res) => {
   let notice = "Ootan andmeid";
+  let firstNameValue="";
+  let lastNameValue="";
+  let eMail="";
   console.log(req.body);
   if (
     !req.body.firstNameInput ||
@@ -473,57 +479,71 @@ app.post("/signUp", (req, res) => {
     req.body.passwordInput.length < 8 ||
     req.body.confirmPasswordInput !== req.body.passwordInput
   ) {
+    eMail = req.body.emailInput;
+    firstNameValue = req.body.firstNameInput;
+    lastNameValue = req.body.lastNameInput;
     console.log("Andmeid on puudu või paroolid ei kattu");
     notice = "Andmeid on puudu, parool liiga lühike või paroolid ei kattu";
-    res.render("signup", { notice: notice });
+    res.render("signup", { notice: notice, eMail:eMail, lastNameValue:lastNameValue, firstNameValue: firstNameValue });
   } //kui andmetes viga ... lõppeb
   else {
-    notice = "Andmed sisestatud";
-    //loome parooliräsi jaoks "soola"
-    bcrypt.genSalt(10, (err, salt) => {
+    let idreq = "SELECT id FROM users WHERE email = ?"
+    conn.query(idreq, [req.body.emailInput], (err,idres)=>{
       if (err) {
-        notice =
-          "Tehniline viga parooli krüpteerimisel, kasutajakontot ei loodud";
-        res.render("signup", { notice: notice });
+        notice = "tehniline viga kasutajate vaatamisel";
+        res.render("singup", {notice: notice});
+      } else if (idres[0] != null){
+        notice = "kasutaja juba olemas";
+        res.render("signup", {notice: notice, eMail:eMail, lastNameValue:lastNameValue, firstNameValue: firstNameValue});
       } else {
-        //krüpeerime parooli ->
-        bcrypt.hash(req.body.passwordInput, salt, (err, pwdhash) => {
+        notice = "Andmed sisestatud";
+        //loome parooliräsi jaoks "soola"
+        bcrypt.genSalt(10, (err, salt) => {
           if (err) {
-            notice = "Tehniline viga, kasutajakontot ei loodud";
-            res.render("signup", { notice: notice });
+            notice =
+              "Tehniline viga parooli krüpteerimisel, kasutajakontot ei loodud";
+            res.render("signup", { notice: notice, eMail:eMail, lastNameValue:lastNameValue, firstNameValue: firstNameValue });
           } else {
-            let sqlreq =
-              "INSERT INTO users ( first_name, last_name, birth_date, gender, email, password ) VALUES (?,?,?,?,?,?)";
-            conn.execute(
-              sqlreq,
-              [
-                req.body.firstNameInput,
-                req.body.lastNameInput,
-                req.body.birthDateInput,
-                req.body.genderInput,
-                req.body.emailInput,
-                pwdhash,
-              ],
-              (err, result) => {
-                if (err) {
-                  notice =
-                    "tehniline viga konto loomisel ja andmebaasi kirjutamisel, kasutajat ei loodud";
-                  res.render("signup", { notice: notice });
-                } else {
-                  notice =
-                    "kasutaja " + req.body.emailInput + " edukalt loodud";
-                  res.render("signup", { notice: notice });
-                }
+            //krüpeerime parooli ->
+            bcrypt.hash(req.body.passwordInput, salt, (err, pwdhash) => {
+              if (err) {
+                notice = "Tehniline viga, kasutajakontot ei loodud";
+                res.render("signup", { notice: notice, eMail:eMail, lastNameValue:lastNameValue, firstNameValue: firstNameValue });
+              } else {
+                let sqlreq =
+                  "INSERT INTO users ( first_name, last_name, birth_date, gender, email, password ) VALUES (?,?,?,?,?,?)";
+                conn.execute(
+                  sqlreq,
+                  [
+                    req.body.firstNameInput,
+                    req.body.lastNameInput,
+                    req.body.birthDateInput,
+                    req.body.genderInput,
+                    req.body.emailInput,
+                    pwdhash,
+                  ],
+                  (err, result) => {
+                    if (err) {
+                      notice =
+                        "tehniline viga konto loomisel ja andmebaasi kirjutamisel, kasutajat ei loodud";
+                      res.render("signup", { notice: notice, eMail:eMail, lastNameValue:lastNameValue, firstNameValue: firstNameValue });
+                    } else {
+                      notice =
+                        "kasutaja " + req.body.emailInput + " edukalt loodud";
+                      res.render("signup", { notice: notice, eMail:eMail, lastNameValue:lastNameValue, firstNameValue: firstNameValue });
+                    }
+                  }
+                ); //conn.execute ... lõppeb
               }
-            ); //conn.execute ... lõppeb
+            }); //hash ... lõppeb
           }
-        }); //hash ... lõppeb
+        }); //genSalt ... lõppeb
+        console.log(req.body);
+      } //kui andmed korras ... lõppeb
+      //res.render("signup", { notice: notice });
+    });
       }
-    }); //genSalt ... lõppeb
-    console.log(req.body);
-  } //kui andmed korras ... lõppeb
-  //res.render("signup", { notice: notice });
-});
+    })
 app.post("/", (req, res) => {
   let notice = "";
   const semestrist = dtEt.semester("9-2-2024");

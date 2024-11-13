@@ -7,37 +7,37 @@
       body {
         background-color: rgb(199, 179, 137);
       }
-    .accordion {
-      background-color: rgb(199,179,137);
-      color: #444;
-      cursor: pointer;
-      padding: 18px;
-      width: 100%;
-      text-align: left;
-      border: none;
-      outline: none;
-      transition: 0.4s; 
-    }
-    .active .accordion:hover {
-      background-color: #ffffff;
-    } 
-    .accordion:after {
-      content: '\002B';
-      color: #777;
-      font-weight: bold;
-      float: right;
-      margin-left: 5px;
-    }
-    .active:after {
-      content: "\2212"
-    }
-    .panel {
-      padding: 0 18px;
-      background-color: rgb(199, 179, 137);
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.2s ease-out
-    }
+      .accordion {
+        background-color: rgb(199, 179, 137);
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        transition: 0.4s;
+      }
+      .active .accordion:hover {
+        background-color: #ffffff;
+      }
+      .accordion:after {
+        content: "\002B";
+        color: #777;
+        font-weight: bold;
+        float: right;
+        margin-left: 5px;
+      }
+      .active:after {
+        content: "\2212";
+      }
+      .panel {
+        padding: 0 18px;
+        background-color: rgb(199, 179, 137);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+      }
     </style>
   </head>
   <body>
@@ -80,7 +80,7 @@
       <span><%= locals.notice || "Ootel" %></span>
     </form>
     <hr />
-    <button class="accordion"> Esimene </button>
+    <button class="accordion">Esimene</button>
     <div class="panel">
       <ul>
         <li><a href="/timenow">Ajainfo</a></li>
@@ -88,20 +88,22 @@
         <li>
           <a href="/reqvisit">Registreeri oma külastus (txt.faili põhine)</a>
         </li>
-        <li><a href="/visitlog">Külastajate nimekiri, (txt.faili põhine)</a></li>
+        <li>
+          <a href="/visitlog">Külastajate nimekiri, (txt.faili põhine)</a>
+        </li>
         <li><a href="/regvisitdb">Registreeri oma külastus</a></li>
         <li><a href="/visitlogdb">Külastajate nimekiri</a></li>
         <li><a href="/eestifilm">Eesti film</a></li>
       </ul>
-      </div>
+    </div>
     <hr />
     <button class="accordion">Uudised</button>
     <div class="panel">
       <ul>
-       <li><a href="/add_news">Lisa uudis</a></li>
+        <li><a href="/add_news">Lisa uudis</a></li>
         <li><a href="/news">Uudised</a></li>
       </ul>
-      </div>
+    </div>
     <hr />
     <button class="accordion">Pildid</button>
     <div class="panel">
@@ -115,20 +117,20 @@
       <li><a href="/signUp">Loo siin kasutajakonto</a></li>
       <li><a href="/signIn">Logi siin sisse</a></li>
     </ul>
-  <script>
-    var acc = document.getElementsByClassName("accordion");
-    var i;
-    for (i = 0; i < acc.length; i++) {
-      acc[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var panel = this.nextElementSibling;
-        if (panel.style.maxHeight) {
-          panel.style.maxHeight = null;
-        } else {
-          panel.style.maxHeight = panel.scrollHeight + "px";
-        }
-      });
-    }
-  </script>
+    <script>
+      var acc = document.getElementsByClassName("accordion");
+      var i;
+      for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+          this.classList.toggle("active");
+          var panel = this.nextElementSibling;
+          if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+          } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+          }
+        });
+      }
+    </script>
   </body>
 </html>
