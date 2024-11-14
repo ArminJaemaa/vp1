@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(199, 179, 137);
+      }
+      .accordion {
+        background-color: rgb(199, 179, 137);
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        transition: 0.4s;
+      }
+      .active .accordion:hover {
+        background-color: #ffffff;
+      }
+      .accordion:after {
+        content: "\002B";
+        color: #777;
+        font-weight: bold;
+        float: right;
+        margin-left: 5px;
+      }
+      .active:after {
+        content: "\2212";
+      }
+      .panel {
+        padding: 0 18px;
+        background-color: rgb(199, 179, 137);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/banner/vp_banner_2024.png" alt="banner" />
+    <h1 style="border: 2px solid rgb(0, 0, 0)">
+      Armin Jaemaa, Informaatika tudeng Tallinna Ülikoolis, 1.õppeaasta
+      &#128526; vot siin on väga palju infot onju &#129312;
+    </h1>
+    <img src="/meme/meme.webp" alt="kerge meem" width="300" height="280" />
+    <p>
+      See veebileht on loodud
+      <a href="https://www.tlu.ee/" target="_blank">Tallinna Ülikoolis</a>
+      õppetöö eesmärgil ja siin ei ole tõsist infot.
+    </p>
+    <hr />
+    <button class="accordion">Film</button>
+    <div class="panel">
+      <ul>
+        <li><a href="/eestifilm">Eesti film</a></li>
+      </ul>
+    </div>
+    <hr />
+    <button class="accordion">Uudised</button>
+    <div class="panel">
+      <ul>
+        <li><a href="/add_news">Lisa uudis</a></li>
+        <li><a href="/news">Uudised</a></li>
+      </ul>
+    </div>
+    <hr />
+    <button class="accordion">Pildid</button>
+    <div class="panel">
+      <ul>
+        <li><a href="/photoUpload">Pildi laadimine</a></li>
+        <li><a href="/images">Pildid</a></li>
+      </ul>
+    </div>
+    <hr />
+    <button class="accordion">Logi välja</button>
+    <div class="panel">
+      <ul>
+        <li><a href="/logout">Logi välja</a></li>
+      </ul>
+    </div>
+    <script>
+      var acc = document.getElementsByClassName("accordion");
+      var i;
+      for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+          this.classList.toggle("active");
+          var panel = this.nextElementSibling;
+          if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+          } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

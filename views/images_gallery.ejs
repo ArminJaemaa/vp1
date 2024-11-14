@@ -8,6 +8,9 @@
         background-color: rgb(91, 178, 236);
       }
     </style>
+    <link rel="stylesheet" href="/style/gallery.css">
+    <link rel="stylesheet" href="/style/modal.css">
+    <script src="/script/gallery.js"></script>
   </head>
   <body>
     <img src="/banner/vp_banner_2024.png" alt="banner"/>
@@ -20,14 +23,20 @@
     <li> <a href="/photoUpload">Lisa siin pilte juurde</a> </li>
   </ul>
 </hr>
+<dialog id="modal" class="modalarea">
+  <span id="modalClose" class="modalClose">&times;</span>
+  <div class="modalhorizontal">
+    <div class="modalvertical">
+      <p id="modalCaption"></p>
+      <img id="modalImage" src="/pics/empty.png" alt="galeriipilt">
+    </div>
+  </div>
+</dialog>
   <h2> Gallery </h2>
+  <div id="gallery" class="gallery">
    <% images.forEach(function(photo){ %>
-    <ol>
-      <li>
-        <img src="/Gallery/thumb/<%=photo.file_name%>" alt="<%=photo.alt_text%>" />
-      </li>
-      <p><%=photo.orig_name%></p>
-    </ol>
+        <img src="/Gallery/thumb/<%=photo.file_name%>" alt="<%=photo.alt_text%>" class="thumbs" data-filename="<%=photo.file_name%>"/>
     <% }); %>
+  </div>
   </body>
 </html>

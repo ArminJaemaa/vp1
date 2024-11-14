@@ -11,9 +11,12 @@ const multer = require("multer");
 const sharp = require("sharp");
 //parooli krüpteerimiseks ->
 const bcrypt = require("bcrypt");
+//sessiooni haldur ->
+const session = require("express-session");
 
 const app = express();
 app.set("view engine", "ejs");
+app.use(session({ secret: "jänes", saveUninitialized: true, resave: true }));
 app.use(express.static("public")); //siit saab server kätte sealt kataloogist asju!!
 //app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -31,7 +34,20 @@ const conn = mysql.createConnection({
   password: dbInfo.confiqdata.passWord,
   database: dbInfo.confiqdata.dataBase,
 });
-
+const checklogin = function (req, res, next) {
+  if (req.session != null) {
+    if (req.session.userId) {
+      console.log("login, sees kasutaja: " + req.session.userId);
+      next();
+    } else {
+      console.log("login not detected");
+      res.redirect("/signin");
+    }
+  } else {
+    console.log("session not detected");
+    res.redirect("/signin");
+  }
+};
 app.get("/timenow", (req, res) => {
   const weekDays = dtEt.dayEt();
   const dateNow = dtEt.dateEt();
@@ -306,7 +322,7 @@ app.get("/visitlogdb", (req, res) => {
     }
   });
 });
-app.get("/add_news", (req, res) => {
+app.get("/add_news", checklogin, (req, res) => {
   let notice = "";
   let newsText = "";
   let newsTitle = "";
@@ -392,7 +408,7 @@ app.get("/news", (req, res) => {
   });
   //res.render("news");
 });
-app.get("/photoUpload", (req, res) => {
+app.get("/photoUpload", checklogin, (req, res) => {
   notice = "";
   altTxt = "";
   res.render("photo_Upload", { notice, altTxt });
@@ -446,13 +462,16 @@ app.post("/photoUpload", upLoadGallery.single("photoInput"), (req, res) => {
 });
 app.get("/images", (req, res) => {
   let sqlreq =
-    "SELECT file_name, orig_name, alt_text FROM images WHERE privacy=?";
+    "SELECT file_name, orig_name, alt_text FROM images WHERE privacy = ?";
   const privacy = 3;
   conn.query(sqlreq, [privacy], (err, result) => {
     if (err) {
       throw err;
     } else {
       images = result;
+      //for(let i = 0; i < result.length; i++) {
+        //photolist.push({href:})
+      //}
       res.render("images_gallery", { images });
     }
   });
@@ -672,11 +691,12 @@ app.post("/signIn", (req, res) => {
               } else {
                 //kas võrdlemisel õige või vale parool?? ->
                 if (comapreResult) {
-                  notice = "Oled sisse loginud";
+                  //notice = "Oled sisse loginud";
                   console.log(
                     "Kasutaja " + req.body.emailInput + " on sisse logitud"
                   );
-                  res.render("signin", { notice: notice });
+                  req.session.userId = result[0].id;
+                  res.redirect("/home");
                 } else {
                   notice = "kasutajatunnus ja/või parool on vale";
                   res.render("signin", { notice: notice });
@@ -688,9 +708,19 @@ app.post("/signIn", (req, res) => {
           console.log("kasutajat ei ole olemas");
           notice = "kasutajatunnus ja/või parool on vale";
           res.render("signin", { notice: notice });
+          res.render("signin");
         }
       }
     }); //conn.execute...lõppeb
   }
+});
+app.get("/home", checklogin, (req, res) => {
+  console.log("sees on kasutaja" + req.session.userId);
+  res.render("home");
+});
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  console.log("user logout");
+  res.redirect("/");
 });
 app.listen(5133);
