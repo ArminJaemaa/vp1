@@ -17,19 +17,9 @@
   </hr>
   <h1>Uudised</h1>
   <ul>
-    <li> <a href="/home">Avaleht</a></li> 
+    <li> <a href="/home">Avaleht</a></li>
     <li> <a href="/news/add_news">Lisa siin uudiseid</a></li>
-    <li> <a href="/news">Uudiste avaleht</a></li>
+    <li> <a href="/news/news">Uudised</a></li>
   </ul>
-</hr>
-  <ol>
-    <% news.forEach(function(item){ %>
-      <li>
-        <p><strong><%=item.news_title%></strong></p>
-        <p><%=item.news_text%></p>
-        <p>Üles laetud: <%= item.news_date %>. Aegub: <%=item.expire_date%></p>
-      </li>
-    <% }); %>
-  </ol>
   </body>
 </html>

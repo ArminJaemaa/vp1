@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<hr lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(153, 182, 114);
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/banner/vp_banner_2024.png" alt="banner" />
+    <h1 style="border: 2px solid rgb(0, 0, 0)">
+      &#128526; SIIN SAAB LISADA TEGELASTE JA FILMIDE SEOSEID &#129312;
+    </h1>
+  </hr>
+  <ul>
+    <li> <a href="/">Avaleht</a></li>
+    <li> <a href="/eestifilm">tagasi</a></li>
+  </ul>
+</hr>
+  <h1> Lisa seoseid </h1>
+  <form method="POST">
+    <label for="personSelect">Filmitegelane</label>
+	<br>
+	<select id="personSelect" name="personSelect">
+		<option selected disabled>Vali tegelane</option>
+		<% personList.forEach(function(person) { %>
+			<option value="<%= person.id %>"><%= person.first_name %> <%= person.last_name %>, sünd. <%= person.birth_date %></option>
+		<% }); %>
+	</select>
+    <br>
+	<label for="movieSelect">Film</label>
+	<br>
+	<select id="filmSelect" name="filmSelect">
+		<option selected disabled>Vali film</option>
+		<% filmList.forEach(function(film) { %>
+			<option value="<%= film.id %>"><%= film.title %>, toodetud: <%= film.production_year %></option>
+		<% }); %>
+	</select>
+	<br>
+	<label for="positionSelect">Roll/amet</label>
+	<br>
+	<select id="positionSelect" name="positionSelect">
+		<option selected disabled>Vali roll/amet</option>
+		<% positionList.forEach(function(position) { %>
+			<option value="<%= position.id %>"><%= position.position_name %></option>
+		<% }); %>
+	</select>
+		<label for="roleInput">Roll/tegelaskuju (kui on näitleja)</label>
+		<input type="text" id="roleInput" name="roleInput" placeholder="Tegelaskuju ...">
+	<br>
+	<input type="submit" id="relationSubmit" name="relationSubmit" value="Salvesta">
+  </form>
+  <ul>
+ 
+  </ul>
+  </body>
+</html>
