@@ -53,32 +53,7 @@
       õppetöö eesmärgil ja siin ei ole tõsist infot.
     </p>
     <p>Semestri algusest on möödas <%= semestrist %> päeva</p>
-    <hr />
-    <p><strong>Logi sisse</strong></p>
-    <form method="POST">
-      <label for="emailInputt">Kasutajatunnus: </label>
-      <input
-        type="text"
-        id="emailInput"
-        name="emailInput"
-        placeholder="Kasutajatunnus"
-      />
-      <label for="passwordInput">Salasõna:</label>
-      <input
-        type="password"
-        id="passwordInput"
-        name="passwordInput"
-        placeholder="Parool"
-      />
-      <br />
-      <input
-        type="submit"
-        id="loginSubmit"
-        name="loginSubmit"
-        value="Logi sisse"
-      />
-      <span><%= locals.notice || "Ootel" %></span>
-    </form>
+    <p><%=  locals.name || "Pole sisse logitud"%></p>
     <hr />
     <button class="accordion">Esimene</button>
     <div class="panel">
@@ -100,7 +75,6 @@
     <button class="accordion">Uudised</button>
     <div class="panel">
       <ul>
-        <li><a href="/add_news">Lisa uudis</a></li>
         <li><a href="/news">Uudised</a></li>
       </ul>
     </div>
@@ -108,7 +82,6 @@
     <button class="accordion">Pildid</button>
     <div class="panel">
       <ul>
-        <li><a href="/photoUpload">Pildi laadimine</a></li>
         <li><a href="/images">Pildid</a></li>
       </ul>
     </div>

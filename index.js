@@ -41,11 +41,11 @@ const checklogin = function (req, res, next) {
       next();
     } else {
       console.log("login not detected");
-      res.redirect("/signin");
+      res.redirect("/");
     }
   } else {
     console.log("session not detected");
-    res.redirect("/signin");
+    res.redirect("/");
   }
 };
 app.get("/timenow", (req, res) => {
@@ -339,7 +339,7 @@ app.post("/add_news", (req, res) => {
   let newsText = "";
   let newsTitle = "";
   let expireDate = dtEt.expireDate();
-  let user = 1;
+  let user = req.session.userId;
   if (!req.body.titleInput || req.body.titleInput.length < 3) {
     let notice = "Uudise pealkiri peab olema vähemalt 3 tähemärki";
     let newsText = req.body.newsInput;
@@ -439,7 +439,7 @@ app.post("/photoUpload", upLoadGallery.single("photoInput"), (req, res) => {
     //salvestame andmebaasi!!
     let sqlreq =
       "INSERT INTO images (file_name, orig_name, alt_text, privacy, user_id) VALUES(?,?,?,?,?)";
-    const userId = 1;
+    let userId = req.session.userId;
     conn.query(
       sqlreq,
       [
@@ -463,7 +463,7 @@ app.post("/photoUpload", upLoadGallery.single("photoInput"), (req, res) => {
 app.get("/images", (req, res) => {
   let sqlreq =
     "SELECT file_name, orig_name, alt_text FROM images WHERE privacy = ?";
-  const privacy = 3;
+  let privacy = 3
   conn.query(sqlreq, [privacy], (err, result) => {
     if (err) {
       throw err;
@@ -610,56 +610,6 @@ app.post("/signUp", (req, res) => {
     });
   }
 });
-app.post("/", (req, res) => {
-  let notice = "";
-  const semestrist = dtEt.semester("9-2-2024");
-  if (!req.body.emailInput || !req.body.passwordInput) {
-    console.log("andmeid puudu");
-    notice = "sisselogimise andmeid on puudu";
-    //const semestrist = dtEt.semester("9-2-2024");
-    res.render("index", { semestrist, notice: notice });
-  } else {
-    let sqlReq = "SELECT id, password FROM users WHERE email = ?";
-    conn.execute(sqlReq, [req.body.emailInput], (err, result) => {
-      if (err) {
-        console.log("viga andmebaasist lugemisel");
-        notice = "tehniline viga, ei logitud sisse :(";
-        res.render("index", { notice: notice, semestrist });
-      } else {
-        if (result[0] != null) {
-          //juhul kui kasutaja on olemas ->
-          //kontrollime sisestatud parooli ->
-          bcrypt.compare(
-            req.body.passwordInput,
-            result[0].password,
-            (err, comapreResult) => {
-              if (err) {
-                notice = "tehniline viga, ei logitud sisse :(";
-                res.render("index", { notice: notice, semestrist });
-              } else {
-                //kas võrdlemisel õige või vale parool?? ->
-                if (comapreResult) {
-                  notice = "Oled sisse loginud";
-                  console.log(
-                    "Kasutaja " + req.body.emailInput + " on sisse logitud"
-                  );
-                  res.render("index", { notice: notice, semestrist });
-                } else {
-                  notice = "kasutajatunnus ja/või parool on vale";
-                  res.render("index", { notice: notice, semestrist });
-                }
-              }
-            }
-          );
-        } else {
-          console.log("kasutajat ei ole olemas");
-          notice = "kasutajatunnus ja/või parool on vale";
-          res.render("index", { notice: notice, semestrist });
-        }
-      }
-    }); //conn.execute...lõppeb
-  }
-});
 app.get("/signIn", (req, res) => {
   res.render("signin");
 });
@@ -671,7 +621,7 @@ app.post("/signIn", (req, res) => {
     //const semestrist = dtEt.semester("9-2-2024");
     res.render("signin", { notice: notice });
   } else {
-    let sqlReq = "SELECT id, password FROM users WHERE email = ?";
+    let sqlReq = "SELECT id, first_name, last_name, password FROM users WHERE email = ?";
     conn.execute(sqlReq, [req.body.emailInput], (err, result) => {
       if (err) {
         console.log("viga andmebaasist lugemisel");
@@ -696,6 +646,8 @@ app.post("/signIn", (req, res) => {
                     "Kasutaja " + req.body.emailInput + " on sisse logitud"
                   );
                   req.session.userId = result[0].id;
+                  req.session.first_name = result[0].first_name;
+                  req.session.last_name = result[0].last_name;
                   res.redirect("/home");
                 } else {
                   notice = "kasutajatunnus ja/või parool on vale";
@@ -715,8 +667,9 @@ app.post("/signIn", (req, res) => {
   }
 });
 app.get("/home", checklogin, (req, res) => {
-  console.log("sees on kasutaja" + req.session.userId);
-  res.render("home");
+  console.log("sees on kasutaja " + req.session.userId + " " + req.session.first_name);
+  let name = req.session.first_name;
+  res.render("home", {name: name});
 });
 app.get("/logout", (req, res) => {
   req.session.destroy();
