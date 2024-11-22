@@ -49,72 +49,12 @@ const checklogin = function (req, res, next) {
     res.redirect("/");
   }
 };
-app.get("/timenow", (req, res) => {
-  const weekDays = dtEt.dayEt();
-  const dateNow = dtEt.dateEt();
-  const timeNow = dtEt.timeEt();
-  res.render("timenow", { nowWD: weekDays, nowD: dateNow, nowT: timeNow });
-});
-
-app.get("/justlist", (req, res) => {
-  let folkWisdom = [];
-  fs.readFile("public/textfiles/vanasonad.txt", "utf8", (err, data) => {
-    if (err) {
-      throw err;
-    } else {
-      folkWisdom = data.split(";");
-      res.render("justlist", { h2: "vanasõnad", listData: folkWisdom });
-    }
-  });
-});
-app.get("/reqvisit", (req, res) => {
-  res.render("regvisit");
-});
-app.post("/reqvisit", (req, res) => {
-  const wkDays = dtEt.dayEt();
-  const dateNow = dtEt.dateEt();
-  const timeNow = dtEt.timeEt();
-  console.log(req.body);
-  fs.open("public/textfiles/visitlog.txt", "a", (err, file) => {
-    if (err) {
-      throw err;
-    } else {
-      fs.appendFile(
-        "public/textfiles/visitlog.txt",
-        req.body.firstNameInput +
-          " " +
-          req.body.lastNameInput +
-          " ( " +
-          wkDays +
-          " " +
-          dateNow +
-          " kell " +
-          timeNow +
-          " )" +
-          ";",
-        (err) => {
-          if (err) {
-            throw err;
-          } else {
-            console.log("faili kirjutati");
-            res.render("regvisit");
-          }
-        }
-      );
-    }
-  });
-});
-app.get("/visitlog", (req, res) => {
-  let visits = [];
-  fs.readFile("public/textfiles/visitlog.txt", "utf8", (err, data) => {
-    if (err) {
-      throw err;
-    } else {
-      visits = data.split(";");
-      res.render("visitlog", { h3: "külastus", listData: visits });
-    }
-  });
-});
+const timeRouter = require("./routes/timenow_routes");
+app.use("/timenow", timeRouter);
+const wizdomRouter = require("./routes/justlist_routes");
+app.use("/justlist", wizdomRouter);
+const regVisit = require("./routes/regvisit_routes");
+app.use("/regvisit", regVisit);
 app.get("/regvisitdb", (req, res) => {
   let notice = "";
   let firstName = "";
