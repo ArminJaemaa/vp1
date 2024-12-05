@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(199, 179, 137);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vilja töö</h1>
+    <hr />
+    <p> <a href="/kokkuvote">Kokkuvõte andmetest</a></p>
+    <hr>
+    <form method="POST">
+      <label for="truck_nr_insert">Veoki number</label>
+      <input
+        type="text"
+        id="truck_nr_insert"
+        name="truck_nr_insert"
+        value="<%=truck_nr%>"
+      />
+      <br />
+      <label for="weight_in_insert">Veoki mass sisenemisel</label>
+      <input
+        type="number"
+        id="weight_in_insert"
+        name="weight_in_insert"
+        value="<%=weight_in%>"
+      />
+      <br />
+      <label for="weight_out_insert">Veoki mass väljumisel</label>
+      <input
+        type="number"
+        id="weight_out_insert"
+        name="weight_out_insert"
+        value="<%=weight_out%>"
+      />
+      <input type="submit" id="viliSubmit" name="viliSubmit" value="salvesta" />
+    </form>
+    <p><%= locals.alert || "sisesta andmed" %></p>
+  </body>
+</html>

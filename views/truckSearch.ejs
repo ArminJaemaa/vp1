@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Armin</title>
+    <style>
+      body {
+        background-color: rgb(199, 179, 137);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vilja töö</h1>
+    <hr />
+    <P> <a href="/">Tagasi avalehele</a></P>
+    <P> <a href="/vili_insert">Sisesta andmeid</a></P>
+    <P> <a href="/kokkuvote">Tagasi</a></P>
+    <hr />
+  <br>
+    </form>
+    <hr />
+    <ol>
+      <% vili.forEach(function(item){%>
+      <li>
+        <p>Auto number: <%=item.truck_nr%></p>
+        <p>Auto mass sisenemisel: <%=item.weight_in%></p>
+        <p>Auto mass väljumisel: <%=item.weight_out%></p>
+        <p>Vilja mass: <%=item.vilja_mass%></p>
+      </li>
+      <% }) %>
+    </ol>
+  </body>
+</html>

@@ -33,6 +33,7 @@
   </div>
 </dialog>
   <h2> Gallery </h2>
+  <p><%-links%></p>
   <div id="gallery" class="gallery">
    <% images.forEach(function(photo){ %>
         <img src="/Gallery/thumb/<%=photo.file_name%>" alt="<%=photo.alt_text%>" class="thumbs" data-filename="<%=photo.file_name%>"/>

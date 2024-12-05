@@ -112,7 +112,7 @@ const read_news = (req, res) => {
           expire_date: dtEt.givenDate(sqlres[i].expire_date),
         });
       }
-      res.render("news", { news: news });
+      res.render("news", { news:news });
     }
   });
   //res.render("news");
