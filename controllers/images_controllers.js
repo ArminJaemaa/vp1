@@ -72,13 +72,6 @@ const imagesPage = (req, res) => {
       console.log(results);
     }
   });
-  //Kui aadressis toodud lk on muudetud, oli vigane, siis ...
-  /*   console.log(req.params.page);
-  if (page != parseInt(req.params.page)) {
-    console.log("LK muutus!!!");
-    res.redirect("/images/" + page);
-  }
- */
   skip = (page - 1) * imageLimit;
   let sqlReq =
     "SELECT file_name, alt_text FROM images WHERE privacy = ? AND deleted IS NULL ORDER BY id DESC LIMIT ?,?";

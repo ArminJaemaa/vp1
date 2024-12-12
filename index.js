@@ -389,7 +389,6 @@ app.post("/signIn", (req, res) => {
           console.log("kasutajat ei ole olemas");
           notice = "kasutajatunnus ja/või parool on vale";
           res.render("signin", { notice: notice });
-          res.render("signin");
         }
       }
     }); //conn.execute...lõppeb

@@ -16,4 +16,5 @@ router.route("/").get(newsHome);
 router.route("/add_news").get(add_news);
 router.route("/add_news").post(adding_news);
 router.route("/news").get(read_news);
+//router.route("/news/:page").get(newsOne);
 module.exports = router;
